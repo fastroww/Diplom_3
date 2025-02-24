@@ -1,0 +1,10 @@
+BASE_URL = "https://stellarburgers.nomoreparties.site"
+LOGIN_URL = f'{BASE_URL}/login'
+PASSWORD_RECOVERY_URL = f'{BASE_URL}/forgot-password'
+PERSONAL_ACCOUNT_URL = f'{BASE_URL}/account/profile'
+ORDER_FEED_URL = f'{BASE_URL}/feed'
+RESET_PASSWORD_URL = f'{BASE_URL}/reset-password'
+EMAIL = "vadim_akimov_16_999@yandex.ru"
+CREATE_USER = '/api/auth/register'
+DELETE_USER = '/api/auth/user'
+INGREDIENT_URL = f'{BASE_URL}/ingredient/61c0c5a71d1f82001bdaaa6d'
