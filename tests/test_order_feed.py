@@ -1,15 +1,14 @@
 import pytest
 import allure
-from selenium.webdriver.common.by import By
-from locators.order_feed_page_locators import OrderFeedPageLocators
+
 
 class TestOrderFeed:
     @allure.title("Тест: Проверка кнопки состава заказа")
     def test_order_composition_button(self, order_feed_page):
         with allure.step("Кликаем на первый заказ в ленте"):
             order_feed_page.click_first_order()
-        with allure.step("Проверяем, что отображается заголовок 'Состав заказа'"):
-            assert order_feed_page.find_visible_element(OrderFeedPageLocators.ORDER_COMPOSITION_TITLE)
+        with allure.step("Проверяем, что отображается заголовок 'Состав'"):
+            order_feed_page.check_order_composition_title()
 
     @allure.title("Тест: Проверка отображения заказа пользователя в ленте заказов")
     def test_user_order_in_order_feed(self, order_feed_page, main_page, login_user, create_and_delete_user):
@@ -26,8 +25,7 @@ class TestOrderFeed:
         with allure.step("Переходим в ленту заказов"):
             main_page.click_order_feed_button()
         with allure.step("Проверяем, что заказ отображается в ленте"):
-            locator = (By.XPATH, f'//p[text() = "#0{identifier_order}"]')
-            assert order_feed_page.find_visible_element(locator)
+            assert identifier_order in order_feed_page.get_order_number_in_history()
 
     @allure.title("Тест: Проверка счетчика выполненных заказов за сегодня")
     def test_counter_completed_today(self, order_feed_page, main_page, login_user, create_and_delete_user):
@@ -44,6 +42,7 @@ class TestOrderFeed:
         with allure.step("Кликаем на кнопку 'Оформить заказ'"):
             main_page.click_place_order_button()
         with allure.step("Закрываем окно заказа"):
+            main_page.wait_normal_order_number()
             main_page.click_close_identifier_order()
         with allure.step("Переходим в ленту заказов"):
             main_page.click_order_feed_button()
@@ -67,6 +66,7 @@ class TestOrderFeed:
         with allure.step("Кликаем на кнопку 'Оформить заказ'"):
             main_page.click_place_order_button()
         with allure.step("Закрываем окно заказа"):
+            main_page.wait_normal_order_number()
             main_page.click_close_identifier_order()
         with allure.step("Переходим в ленту заказов"):
             main_page.click_order_feed_button()
@@ -90,5 +90,5 @@ class TestOrderFeed:
         with allure.step("Переходим в ленту заказов"):
             main_page.click_order_feed_button()
         with allure.step("Проверяем, что заказ отображается в разделе 'В работе'"):
-            locator = (By.XPATH, f"//li[text() = '{identifier_order}']")
-            assert order_feed_page.find_visible_element(locator)
+            order_feed_page.wait_order_number_at_work(identifier_order)
+            assert identifier_order in order_feed_page.get_order_number_at_work()

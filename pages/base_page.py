@@ -1,5 +1,3 @@
-import time
-
 import pytest
 import allure
 from selenium.webdriver import ActionChains
@@ -32,10 +30,7 @@ class BasePage:
 
     @allure.step("Кликаем на элемент по локатору: {locator}")
     def click(self, locator):
-        element = self.find_clickable_element(locator)
-        self.scroll_to_element(element)
-        time.sleep(2)
-        element.click()
+        self.wait.until(EC.element_to_be_clickable(locator), message = f'Not find element{locator}').click()
 
     @allure.step("Ищем видимый элемент по локатору: {locator}")
     def find_visible_element(self, locator):
@@ -62,3 +57,6 @@ class BasePage:
         element_to_drag = self.find_visible_element(locator_to_drag)
         target_element = self.find_visible_element(locator_target)
         self.action_chains.drag_and_drop(element_to_drag, target_element).perform()
+
+    def get_class(self, locator):
+        return self.wait.until(EC.presence_of_element_located(locator)).get_attribute("class")

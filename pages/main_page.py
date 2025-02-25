@@ -1,4 +1,3 @@
-import time
 from locators.main_page_locators import MainPageLocators
 from pages.base_page import BasePage
 import allure
@@ -37,10 +36,30 @@ class MainPage(BasePage):
 
     @allure.step("Получаем номер заказа")
     def get_order_number(self):
-        time.sleep(3)
-        return self.get_text(MainPageLocators.ORDER_NUMBER)
+        order_id = self.get_text(MainPageLocators.ORDER_NUMBER)
+        while order_id == '9999':
+            order_id = self.get_text(MainPageLocators.ORDER_NUMBER)
+        return f"{order_id}"
 
     @allure.step("Кликаем на кнопку закрытия окна заказа")
     def click_close_identifier_order(self):
-        time.sleep(2)
         self.click(MainPageLocators.CLOSE_IDENTIFIER_ORDER_BUTTON)
+
+    @allure.step('Проверить закрытие деталей ингредиента')
+    def check_close_details(self):
+        class_to_check = self.get_class(MainPageLocators.MODAL_WINDOW)
+        assert 'Modal_modal_opened__3ISw4' not in class_to_check
+
+    def wait_order_cooking_title(self):
+        return self.find_visible_element(MainPageLocators.ORDER_COOKING_TITLE)
+
+    def check_order_cooking_title(self):
+        text = self.find_visible_element(MainPageLocators.ORDER_COOKING_TITLE).text
+        assert text == 'Ваш заказ начали готовить'
+
+    def wait_normal_order_number(self):
+        # Ожидаем, пока номер заказа не станет отличным от '9999'
+        return self.wait.until(
+            lambda driver: self.get_text(MainPageLocators.ORDER_NUMBER) != '9999'
+        )
+

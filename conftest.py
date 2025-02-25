@@ -25,6 +25,7 @@ def driver(request):
     yield browser
     browser.quit()
 
+
 @pytest.fixture
 def main_page(driver):
     page = MainPage(driver)
